@@ -13,7 +13,7 @@ test:
     - docker run -v `pwd`:/build quay.io/opsee/go-build
     - docker build -t quay.io/opsee/vinz:latest .
 deployment:
-  ami:
+  quay:
     branch: master
     owner: opsee
     commands:
