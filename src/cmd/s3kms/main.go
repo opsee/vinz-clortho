@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	Version = "0.0.1"
+	version = "0.0.1"
 )
 
 var (
@@ -131,7 +131,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "s3kms"
 	app.Usage = "Manage keys encrypted with KMS stored in S3."
-	app.Version = Version
+	app.Version = version
 
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
