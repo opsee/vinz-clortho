@@ -4,7 +4,7 @@ machine:
   environment:
     ci: "true"
 dependencies:
-  pre:
+  override:
     - docker info
     - go version
     - docker pull quay.io/opsee/go-build
