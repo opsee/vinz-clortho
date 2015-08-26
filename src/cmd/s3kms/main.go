@@ -9,6 +9,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
 	"github.com/aws/aws-sdk-go/service/kms"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/codegangsta/cli"
@@ -74,7 +75,6 @@ func put(c *cli.Context) {
 	bucket := c.String("bucket")
 	object := c.String("object")
 
-	kmsSvc := getKMSClient()
 	s3Svc := getS3Client()
 
 	plaintext, err := ioutil.ReadAll(os.Stdin)
@@ -83,28 +83,13 @@ func put(c *cli.Context) {
 		return
 	}
 
-	kmsParams := &kms.EncryptInput{
-		KeyID:     aws.String(c.String("key")),
-		Plaintext: plaintext,
-		EncryptionContext: map[string]*string{
-			"Bucket": aws.String(bucket),
-			"Object": aws.String(object),
-		},
-	}
-
-	kmsResp, err := kmsSvc.Encrypt(kmsParams)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	ciphertext := kmsResp.CiphertextBlob
-
 	s3Params := &s3.PutObjectInput{
-		Bucket:      aws.String(bucket),
-		Key:         aws.String(object),
-		Body:        bytes.NewReader(ciphertext),
-		ContentType: aws.String("text/plain"),
+		Bucket:               aws.String(bucket),
+		Key:                  aws.String(object),
+		SSEKMSKeyId:          aws.String(c.String("key")),
+		ServerSideEncryption: aws.String("aws:kms"),
+		Body:                 bytes.NewReader(plaintext),
+		ContentType:          aws.String("text/plain"),
 	}
 	//s3Params.GrantRead = aws.String(fmt.Sprintf("id=%s", c.String("read")))
 
@@ -121,7 +106,7 @@ func main() {
 	creds := credentials.NewChainCredentials(
 		[]credentials.Provider{
 			&credentials.EnvProvider{},
-			&credentials.EC2RoleProvider{ExpiryWindow: 5 * time.Minute},
+			&ec2rolecreds.EC2RoleProvider{ExpiryWindow: 5 * time.Minute},
 		})
 
 	region := aws.String(os.Getenv("AWS_DEFAULT_REGION"))

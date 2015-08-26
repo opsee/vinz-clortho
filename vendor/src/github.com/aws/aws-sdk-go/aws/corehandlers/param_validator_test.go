@@ -1,18 +1,25 @@
-package aws_test
+package corehandlers_test
 
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/stretchr/testify/assert"
+	"github.com/aws/aws-sdk-go/aws/corehandlers"
+	"github.com/aws/aws-sdk-go/aws/request"
+	"github.com/aws/aws-sdk-go/aws/service"
+	"github.com/aws/aws-sdk-go/aws/service/serviceinfo"
 )
 
-var service = func() *aws.Service {
-	s := &aws.Service{
-		Config:      &aws.Config{},
-		ServiceName: "mock-service",
-		APIVersion:  "2015-01-01",
+var testSvc = func() *service.Service {
+	s := &service.Service{
+		ServiceInfo: serviceinfo.ServiceInfo{
+			Config:      &aws.Config{},
+			ServiceName: "mock-service",
+			APIVersion:  "2015-01-01",
+		},
 	}
 	return s
 }()
@@ -48,15 +55,15 @@ func TestNoErrors(t *testing.T) {
 		OptionalStruct: &ConditionalStructShape{Name: aws.String("Name")},
 	}
 
-	req := aws.NewRequest(service, &aws.Operation{}, input, nil)
-	aws.ValidateParameters(req)
+	req := testSvc.NewRequest(&request.Operation{}, input, nil)
+	corehandlers.ValidateParametersHandler.Fn(req)
 	assert.NoError(t, req.Error)
 }
 
 func TestMissingRequiredParameters(t *testing.T) {
 	input := &StructShape{}
-	req := aws.NewRequest(service, &aws.Operation{}, input, nil)
-	aws.ValidateParameters(req)
+	req := testSvc.NewRequest(&request.Operation{}, input, nil)
+	corehandlers.ValidateParametersHandler.Fn(req)
 
 	assert.Error(t, req.Error)
 	assert.Equal(t, "InvalidParameter", req.Error.(awserr.Error).Code())
@@ -74,8 +81,8 @@ func TestNestedMissingRequiredParameters(t *testing.T) {
 		OptionalStruct: &ConditionalStructShape{},
 	}
 
-	req := aws.NewRequest(service, &aws.Operation{}, input, nil)
-	aws.ValidateParameters(req)
+	req := testSvc.NewRequest(&request.Operation{}, input, nil)
+	corehandlers.ValidateParametersHandler.Fn(req)
 
 	assert.Error(t, req.Error)
 	assert.Equal(t, "InvalidParameter", req.Error.(awserr.Error).Code())

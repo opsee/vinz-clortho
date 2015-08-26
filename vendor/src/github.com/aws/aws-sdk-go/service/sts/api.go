@@ -6,15 +6,15 @@ package sts
 import (
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awsutil"
+	"github.com/aws/aws-sdk-go/aws/request"
 )
 
 const opAssumeRole = "AssumeRole"
 
 // AssumeRoleRequest generates a request for the AssumeRole operation.
-func (c *STS) AssumeRoleRequest(input *AssumeRoleInput) (req *aws.Request, output *AssumeRoleOutput) {
-	op := &aws.Operation{
+func (c *STS) AssumeRoleRequest(input *AssumeRoleInput) (req *request.Request, output *AssumeRoleOutput) {
+	op := &request.Operation{
 		Name:       opAssumeRole,
 		HTTPMethod: "POST",
 		HTTPPath:   "/",
@@ -111,8 +111,8 @@ func (c *STS) AssumeRole(input *AssumeRoleInput) (*AssumeRoleOutput, error) {
 const opAssumeRoleWithSAML = "AssumeRoleWithSAML"
 
 // AssumeRoleWithSAMLRequest generates a request for the AssumeRoleWithSAML operation.
-func (c *STS) AssumeRoleWithSAMLRequest(input *AssumeRoleWithSAMLInput) (req *aws.Request, output *AssumeRoleWithSAMLOutput) {
-	op := &aws.Operation{
+func (c *STS) AssumeRoleWithSAMLRequest(input *AssumeRoleWithSAMLInput) (req *request.Request, output *AssumeRoleWithSAMLOutput) {
+	op := &request.Operation{
 		Name:       opAssumeRoleWithSAML,
 		HTTPMethod: "POST",
 		HTTPPath:   "/",
@@ -182,8 +182,8 @@ func (c *STS) AssumeRoleWithSAML(input *AssumeRoleWithSAMLInput) (*AssumeRoleWit
 const opAssumeRoleWithWebIdentity = "AssumeRoleWithWebIdentity"
 
 // AssumeRoleWithWebIdentityRequest generates a request for the AssumeRoleWithWebIdentity operation.
-func (c *STS) AssumeRoleWithWebIdentityRequest(input *AssumeRoleWithWebIdentityInput) (req *aws.Request, output *AssumeRoleWithWebIdentityOutput) {
-	op := &aws.Operation{
+func (c *STS) AssumeRoleWithWebIdentityRequest(input *AssumeRoleWithWebIdentityInput) (req *request.Request, output *AssumeRoleWithWebIdentityOutput) {
+	op := &request.Operation{
 		Name:       opAssumeRoleWithWebIdentity,
 		HTTPMethod: "POST",
 		HTTPPath:   "/",
@@ -273,8 +273,8 @@ func (c *STS) AssumeRoleWithWebIdentity(input *AssumeRoleWithWebIdentityInput) (
 const opDecodeAuthorizationMessage = "DecodeAuthorizationMessage"
 
 // DecodeAuthorizationMessageRequest generates a request for the DecodeAuthorizationMessage operation.
-func (c *STS) DecodeAuthorizationMessageRequest(input *DecodeAuthorizationMessageInput) (req *aws.Request, output *DecodeAuthorizationMessageOutput) {
-	op := &aws.Operation{
+func (c *STS) DecodeAuthorizationMessageRequest(input *DecodeAuthorizationMessageInput) (req *request.Request, output *DecodeAuthorizationMessageOutput) {
+	op := &request.Operation{
 		Name:       opDecodeAuthorizationMessage,
 		HTTPMethod: "POST",
 		HTTPPath:   "/",
@@ -323,8 +323,8 @@ func (c *STS) DecodeAuthorizationMessage(input *DecodeAuthorizationMessageInput)
 const opGetFederationToken = "GetFederationToken"
 
 // GetFederationTokenRequest generates a request for the GetFederationToken operation.
-func (c *STS) GetFederationTokenRequest(input *GetFederationTokenInput) (req *aws.Request, output *GetFederationTokenOutput) {
-	op := &aws.Operation{
+func (c *STS) GetFederationTokenRequest(input *GetFederationTokenInput) (req *request.Request, output *GetFederationTokenOutput) {
+	op := &request.Operation{
 		Name:       opGetFederationToken,
 		HTTPMethod: "POST",
 		HTTPPath:   "/",
@@ -413,8 +413,8 @@ func (c *STS) GetFederationToken(input *GetFederationTokenInput) (*GetFederation
 const opGetSessionToken = "GetSessionToken"
 
 // GetSessionTokenRequest generates a request for the GetSessionToken operation.
-func (c *STS) GetSessionTokenRequest(input *GetSessionTokenInput) (req *aws.Request, output *GetSessionTokenOutput) {
-	op := &aws.Operation{
+func (c *STS) GetSessionTokenRequest(input *GetSessionTokenInput) (req *request.Request, output *GetSessionTokenOutput) {
+	op := &request.Operation{
 		Name:       opGetSessionToken,
 		HTTPMethod: "POST",
 		HTTPPath:   "/",
@@ -482,7 +482,7 @@ type AssumeRoleInput struct {
 	// created it. For more information about the external ID, see How to Use External
 	// ID When Granting Access to Your AWS Resources (http://docs.aws.amazon.com/STS/latest/UsingSTS/sts-delegating-externalid.html)
 	// in Using Temporary Security Credentials.
-	ExternalID *string `locationName:"ExternalId" type:"string"`
+	ExternalId *string `type:"string"`
 
 	// An IAM policy in JSON format.
 	//
@@ -505,7 +505,7 @@ type AssumeRoleInput struct {
 	Policy *string `type:"string"`
 
 	// The Amazon Resource Name (ARN) of the role to assume.
-	RoleARN *string `locationName:"RoleArn" type:"string" required:"true"`
+	RoleArn *string `type:"string" required:"true"`
 
 	// An identifier for the assumed role session.
 	//
@@ -616,10 +616,10 @@ type AssumeRoleWithSAMLInput struct {
 
 	// The Amazon Resource Name (ARN) of the SAML provider in IAM that describes
 	// the IdP.
-	PrincipalARN *string `locationName:"PrincipalArn" type:"string" required:"true"`
+	PrincipalArn *string `type:"string" required:"true"`
 
 	// The Amazon Resource Name (ARN) of the role that the caller is assuming.
-	RoleARN *string `locationName:"RoleArn" type:"string" required:"true"`
+	RoleArn *string `type:"string" required:"true"`
 
 	// The base-64 encoded SAML authentication response provided by the IdP.
 	//
@@ -739,10 +739,10 @@ type AssumeRoleWithWebIdentityInput struct {
 	// 2.0 access tokens. Do not include URL schemes and port numbers.
 	//
 	// Do not specify this value for OpenID Connect ID tokens.
-	ProviderID *string `locationName:"ProviderId" type:"string"`
+	ProviderId *string `type:"string"`
 
 	// The Amazon Resource Name (ARN) of the role that the caller is assuming.
-	RoleARN *string `locationName:"RoleArn" type:"string" required:"true"`
+	RoleArn *string `type:"string" required:"true"`
 
 	// An identifier for the assumed role session. Typically, you pass the name
 	// or identifier that is associated with the user who is using your application.
@@ -836,12 +836,12 @@ type AssumedRoleUser struct {
 	// AssumeRole action. For more information about ARNs and how to use them in
 	// policies, see IAM Identifiers (http://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html)
 	// in Using IAM.
-	ARN *string `locationName:"Arn" type:"string" required:"true"`
+	Arn *string `type:"string" required:"true"`
 
 	// A unique identifier that contains the role ID and the role session name of
 	// the role that is being assumed. The role ID is generated by AWS when the
 	// role is created.
-	AssumedRoleID *string `locationName:"AssumedRoleId" type:"string" required:"true"`
+	AssumedRoleId *string `type:"string" required:"true"`
 
 	metadataAssumedRoleUser `json:"-" xml:"-"`
 }
@@ -863,7 +863,7 @@ func (s AssumedRoleUser) GoString() string {
 // AWS credentials for API authentication.
 type Credentials struct {
 	// The access key ID that identifies the temporary security credentials.
-	AccessKeyID *string `locationName:"AccessKeyId" type:"string" required:"true"`
+	AccessKeyId *string `type:"string" required:"true"`
 
 	// The date on which the current credentials expire.
 	Expiration *time.Time `type:"timestamp" timestampFormat:"iso8601" required:"true"`
@@ -943,11 +943,11 @@ type FederatedUser struct {
 	// For more information about ARNs and how to use them in policies, see IAM
 	// Identifiers (http://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html)
 	// in Using IAM.
-	ARN *string `locationName:"Arn" type:"string" required:"true"`
+	Arn *string `type:"string" required:"true"`
 
 	// The string that identifies the federated user associated with the credentials,
 	// similar to the unique ID of an IAM user.
-	FederatedUserID *string `locationName:"FederatedUserId" type:"string" required:"true"`
+	FederatedUserId *string `type:"string" required:"true"`
 
 	metadataFederatedUser `json:"-" xml:"-"`
 }
