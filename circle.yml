@@ -7,7 +7,7 @@ dependencies:
   override:
     - docker info
     - go version
-    - docker pull quay.io/opsee/go-build
+    - docker pull quay.io/opsee/build-go
 test:
   override:
     - docker run -v `pwd`:/build quay.io/opsee/go-build
