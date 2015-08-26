@@ -10,7 +10,7 @@ dependencies:
     - docker pull quay.io/opsee/build-go
 test:
   override:
-    - docker run -v `pwd`:/build quay.io/opsee/go-build
+    - docker run -v `pwd`:/build quay.io/opsee/build-go
     - docker build -t quay.io/opsee/vinz:latest .
 deployment:
   quay:
