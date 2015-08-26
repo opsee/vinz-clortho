@@ -10,7 +10,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
-	"github.com/aws/aws-sdk-go/service/kms"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/codegangsta/cli"
 )
@@ -23,10 +22,6 @@ var (
 	awsConfig *aws.Config
 )
 
-func getKMSClient() *kms.KMS {
-	return kms.New(awsConfig)
-}
-
 func getS3Client() *s3.S3 {
 	return s3.New(awsConfig)
 }
@@ -35,7 +30,6 @@ func get(c *cli.Context) {
 	bucket := c.String("bucket")
 	object := c.String("object")
 
-	kmsSvc := getKMSClient()
 	s3Svc := getS3Client()
 
 	s3Params := &s3.GetObjectInput{
@@ -48,27 +42,13 @@ func get(c *cli.Context) {
 		return
 	}
 
-	ciphertext, err := ioutil.ReadAll(s3Resp.Body)
+	plaintext, err := ioutil.ReadAll(s3Resp.Body)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	kmsParams := &kms.DecryptInput{
-		CiphertextBlob: ciphertext,
-		EncryptionContext: map[string]*string{
-			"Bucket": aws.String(bucket),
-			"Object": aws.String(object),
-		},
-	}
-
-	kmsResp, err := kmsSvc.Decrypt(kmsParams)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	os.Stdout.Write(kmsResp.Plaintext)
+	os.Stdout.Write(plaintext)
 }
 
 func put(c *cli.Context) {
