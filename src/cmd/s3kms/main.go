@@ -15,22 +15,24 @@ import (
 )
 
 const (
-	version = "0.0.1"
+	version = "0.0.2"
 )
 
-var (
-	awsConfig *aws.Config
-)
-
-func getS3Client() *s3.S3 {
-	return s3.New(awsConfig)
+func getAWSConfig(c *cli.Context) *aws.Config {
+	creds := credentials.NewChainCredentials(
+		[]credentials.Provider{
+			&credentials.EnvProvider{},
+			&ec2rolecreds.EC2RoleProvider{ExpiryWindow: 5 * time.Minute},
+		})
+	region := c.GlobalString("region")
+	return &aws.Config{Credentials: creds, Region: aws.String(region)}
 }
 
 func get(c *cli.Context) {
+	awsConfig := getAWSConfig(c)
 	bucket := c.String("bucket")
 	object := c.String("object")
-
-	s3Svc := getS3Client()
+	s3Svc := s3.New(awsConfig)
 
 	s3Params := &s3.GetObjectInput{
 		Bucket: aws.String(bucket),
@@ -52,10 +54,10 @@ func get(c *cli.Context) {
 }
 
 func put(c *cli.Context) {
+	awsConfig := getAWSConfig(c)
 	bucket := c.String("bucket")
 	object := c.String("object")
-
-	s3Svc := getS3Client()
+	s3Svc := s3.New(awsConfig)
 
 	plaintext, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
@@ -83,16 +85,6 @@ func put(c *cli.Context) {
 }
 
 func main() {
-	creds := credentials.NewChainCredentials(
-		[]credentials.Provider{
-			&credentials.EnvProvider{},
-			&ec2rolecreds.EC2RoleProvider{ExpiryWindow: 5 * time.Minute},
-		})
-
-	region := aws.String(os.Getenv("AWS_DEFAULT_REGION"))
-
-	awsConfig = &aws.Config{Credentials: creds, Region: region}
-
 	app := cli.NewApp()
 	app.Name = "s3kms"
 	app.Usage = "Manage keys encrypted with KMS stored in S3."
