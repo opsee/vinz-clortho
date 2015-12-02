@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/codegangsta/cli"
 )
@@ -32,7 +33,7 @@ func get(c *cli.Context) {
 	awsConfig := getAWSConfig(c)
 	bucket := c.String("bucket")
 	object := c.String("object")
-	s3Svc := s3.New(awsConfig)
+	s3Svc := s3.New(session.New(), awsConfig)
 
 	s3Params := &s3.GetObjectInput{
 		Bucket: aws.String(bucket),
@@ -57,7 +58,7 @@ func put(c *cli.Context) {
 	awsConfig := getAWSConfig(c)
 	bucket := c.String("bucket")
 	object := c.String("object")
-	s3Svc := s3.New(awsConfig)
+	s3Svc := s3.New(session.New(), awsConfig)
 
 	plaintext, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
