@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
+	"github.com/aws/aws-sdk-go/aws/ec2metadata"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/codegangsta/cli"
@@ -23,7 +24,7 @@ func getAWSConfig(c *cli.Context) *aws.Config {
 	creds := credentials.NewChainCredentials(
 		[]credentials.Provider{
 			&credentials.EnvProvider{},
-			&ec2rolecreds.EC2RoleProvider{ExpiryWindow: 5 * time.Minute},
+			&ec2rolecreds.EC2RoleProvider{Client: ec2metadata.New(session.New(&aws.Config{})), ExpiryWindow: 5 * time.Minute},
 		})
 	region := c.GlobalString("region")
 	return &aws.Config{Credentials: creds, Region: aws.String(region)}
