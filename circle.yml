@@ -7,7 +7,7 @@ dependencies:
   override:
     - docker info
     - go version
-    - docker pull quay.io/opsee/build-go
+    - docker pull quay.io/opsee/build-go:16
 test:
   override:
     - docker run -v `pwd`:/gopath/src/github.com/opsee/vinz-clortho -e PROJECT=github.com/opsee/vinz-clortho quay.io/opsee/build-go:16
