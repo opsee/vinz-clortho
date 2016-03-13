@@ -10,7 +10,7 @@ dependencies:
     - docker pull quay.io/opsee/build-go
 test:
   override:
-    - docker run -v `pwd`:/build quay.io/opsee/build-go:16
+    - docker run -v `pwd`:/gopath/src/github.com/opsee/vinz-clortho -e PROJECT=github.com/opsee/vinz-clortho quay.io/opsee/build-go:16
     - docker build -t quay.io/opsee/vinz:${CIRCLE_SHA1} .
 deployment:
   quay:
