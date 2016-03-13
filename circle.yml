@@ -10,12 +10,12 @@ dependencies:
     - docker pull quay.io/opsee/build-go
 test:
   override:
-    - docker run -v `pwd`:/build quay.io/opsee/build-go
-    - docker build -t quay.io/opsee/vinz:latest .
+    - docker run -v `pwd`:/build quay.io/opsee/build-go:16
+    - docker build -t quay.io/opsee/vinz:${CIRCLE_SHA1} .
 deployment:
   quay:
     branch: master
     owner: opsee
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USERNAME -p $DOCKER_PASSWORD quay.io
-      - docker push quay.io/opsee/vinz:latest
+      - docker push quay.io/opsee/vinz:${CIRCLE_SHA1}

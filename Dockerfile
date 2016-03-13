@@ -1,9 +1,8 @@
-FROM gliderlabs/alpine:3.2
+FROM gliderlabs/alpine:edge
 MAINTAINER Greg Poirier <greg@opsee.co>
 
-RUN apk update && \
-    apk add bash && \
-    rm -rf /var/cache/apk/* && \
+RUN apk add --update bash curl && \
+    rm -rf /var/cache/apt/* && \
     mkdir -p /opt/bin
 
 COPY target/linux/amd64/* /opt/bin/
