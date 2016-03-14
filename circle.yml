@@ -18,5 +18,6 @@ deployment:
     owner: opsee
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USERNAME -p $DOCKER_PASSWORD quay.io
+      - docker tag -f quay.io/opsee/vinz:${CIRCLE_SHA1} quay.io/opsee/vinz:master
       - docker push quay.io/opsee/vinz:${CIRCLE_SHA1}
-      - docker push quay.io/opsee/vinz:latest
+      - docker push quay.io/opsee/vinz:master
